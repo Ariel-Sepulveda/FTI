@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+// https://www.traductorbinario.com/
+
 public class App {
 
     public static void main(final String[] args) throws Exception {
@@ -15,6 +17,7 @@ public class App {
         String[] cadenaBinaria;
 
         String cadenaHexAux = "";
+        String cadenaAsciiAux = "";
         String[] cadenaHex;
 
         /* ============================================================ */
@@ -25,43 +28,76 @@ public class App {
 
         /* ============================================================ */
 
-        // estado inicial = 0
-        int estadoIdx = 1;
         int columna;
+        int fila = 1;
+        String estado;
+        String strAux = "";
+
+        System.out.println();
+
+        System.out.println("CONVERSOR BINARIO A HEXADECIMAL");
+        System.out.println("===============================");
+
+        Thread.sleep(1500);
 
         for (int i = 0; i < cadenaBinaria.length; i++) {
 
             columna = buscarEntrada(cadenaBinaria[i], automataBAH, 4);
-            estadoIdx = buscarEstado(automataBAH[estadoIdx][columna], automataBAH, 32);
+            estado = automataBAH[fila][columna];
+            fila = buscarEstado(estado, automataBAH, 32);
 
-            if (!automataBAH[estadoIdx][3].equals("-")) {
-                cadenaHexAux += automataBAH[estadoIdx][3];
-                estadoIdx = 1; // reseteo
+            strAux += cadenaBinaria[i];
+
+            if (!automataBAH[fila][3].equals("-")) {
+                cadenaHexAux += automataBAH[fila][3];
+                System.out.println("Binario: '" + strAux + "' --> Hexadecimal: '" + automataBAH[fila][3] + "'");
+                strAux = "";
             }
+
+            Thread.sleep(25);
 
         }
 
-        System.out.println(cadenaHexAux);
         System.out.println();
 
         /* ============================================================ */
 
-        estadoIdx = 1;
+        System.out.println("CONVERSOR HEXADECIMAL A ASCII");
+        System.out.println("=============================");
+
+        Thread.sleep(1500);
+
+        fila = 1;
         cadenaHex = cadenaHexAux.split("");
 
         for (int i = 0; i < cadenaHex.length; i++) {
 
             columna = buscarEntrada(cadenaHex[i], automataHAA, 18);
-            estadoIdx = buscarEstado(automataHAA[estadoIdx][columna], automataHAA, 72);
+            estado = automataHAA[fila][columna];
+            fila = buscarEstado(estado, automataHAA, 72);
 
-            if (!automataHAA[estadoIdx][17].equals("-")) {
-                System.out.print(automataHAA[estadoIdx][17]);
-                estadoIdx = buscarEstado("0", automataHAA, 72);
+            strAux += cadenaHex[i];
+
+            if (!automataHAA[fila][17].equals("-")) {
+                cadenaAsciiAux += automataHAA[fila][17];
+                System.out.println("Hexadecimal: '" + strAux + "' --> ASCII: '" + automataHAA[fila][17] + "'");
+                strAux = "";
             }
+
+            Thread.sleep(100);
 
         }
 
-        System.out.println();
+        Thread.sleep(1000);
+
+
+        read = new Scanner(new File("resources/mensaje.txt"));
+
+        System.out.println("\n\nCONVERSION BINARIO A ASCII FINALIZADA.\n\nRESULTADOS:\n\nBINARIO: " + read.nextLine()
+                + "\n\nHEXADECIMAL: " + cadenaHexAux + "\n\nASCII: " + cadenaAsciiAux);
+        read.close();
+
+        System.out.println("\nTERMINADO.");
 
     }
 
